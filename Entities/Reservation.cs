@@ -21,10 +21,21 @@ namespace pers_exception.Entities
             TimeSpan duration = Checkout.Subtract(Checkin);
             return (int) duration.TotalDays;
         }
-        public void UpdateDates(DateTime checkin, DateTime checkout)
+        public string UpdateDates(DateTime checkin, DateTime checkout)
         {
+            DateTime now = DateTime.Now;
+            if(checkin < now || checkout < now)
+            {
+                return "Error in reservation: Reservation dates for update must be future dates.";
+            }
+            if(checkout <= checkin)
+            {
+                return "Error in reservation: Check-out date must be higher than check-in";
+            }
+
             Checkin = checkin;
             Checkout = checkout;
+            return null;
         }
         public override string ToString()
         {
