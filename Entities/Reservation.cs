@@ -1,4 +1,5 @@
 using System;
+using pers_exception.Entities.Exceptions;
 
 namespace pers_exception.Entities
 {
@@ -12,6 +13,10 @@ namespace pers_exception.Entities
          }
          public Reservation(int roomNumber, DateTime checkin, DateTime checkout)
          {
+             if(checkout < checkin)
+             {
+                 throw new DomainException("Check-out date must be higher than check-in.");
+             }
              RoomNumber = roomNumber;
              Checkin = checkin;
              Checkout = checkout;
@@ -21,21 +26,20 @@ namespace pers_exception.Entities
             TimeSpan duration = Checkout.Subtract(Checkin);
             return (int) duration.TotalDays;
         }
-        public string UpdateDates(DateTime checkin, DateTime checkout)
+        public void UpdateDates(DateTime checkin, DateTime checkout)
         {
             DateTime now = DateTime.Now;
             if(checkin < now || checkout < now)
             {
-                return "Error in reservation: Reservation dates for update must be future dates.";
+                throw new DomainException("Reservation dates for update must be future dates.");
             }
             if(checkout <= checkin)
             {
-                return "Error in reservation: Check-out date must be higher than check-in";
+                throw new DomainException ("Check-out date must be higher than check-in.");
             }
 
             Checkin = checkin;
             Checkout = checkout;
-            return null;
         }
         public override string ToString()
         {
